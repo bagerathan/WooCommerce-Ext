@@ -37,11 +37,11 @@ INSTALLATION
 
 1. Use the github's download feature to download a zip of the plugin (Clone or Download -> Download ZIP)
 
-1. Once logged into your admin dashboard navigate to plugins > add new
+2. Once logged into your admin dashboard navigate to plugins > add new
 
-2. Select upload plugin and locate the WooCommerce-Laybuy-master.zip plugin and then click 'Install Now'
+3. Select upload plugin and locate the WooCommerce-Laybuy-master.zip plugin and then click 'Install Now'
 
-3. Activate the plugin and you are all ready to go
+4. Activate the plugin and you are all ready to go
 
 
 == Changelog ==
