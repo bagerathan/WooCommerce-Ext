@@ -1,3 +1,16 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+================================================================================================
+
+PLEASE NOTE (2018-01-07)
+
+Do not install this module as at 7th Feb 2018, we have found it does not inlcude some updates 
+from previous developer, we have these and are integrating them as quickly as possible, we 
+will update this message as soon as the correct module is available
+
+================================================================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 === Laybuy Payment Extension for WooCommerce ===
 Requires at least: 4.1
 Tested up to: 4.9
