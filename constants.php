@@ -10,3 +10,4 @@ define( 'CANCEL_ORDER_SUFFIX', 'order/cancel' );
 define( 'CONFIRM_ORDER_SUFFIX', 'order/confirm' );
 define( 'REFUND_ORDER_SUFFIX', 'order/refund' );
 define( 'WOOCOMMERCE_LAYBUY_SLUG', 'woocommerce-laybuy');
+define( 'WOOCOMMERCE_LAYBUY_PLUGIN_PATH', plugin_dir_url(__FILE__));

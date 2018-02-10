@@ -1,16 +1,3 @@
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-================================================================================================
-
-PLEASE NOTE (2018-01-07)
-
-Do not install this module as at 7th Feb 2018, we have found it does not inlcude some updates 
-from previous developer, we have these and are integrating them as quickly as possible, we 
-will update this message as soon as the correct module is available
-
-================================================================================================
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 === Laybuy Payment Extension for WooCommerce ===
 Requires at least: 4.1
 Tested up to: 4.9
@@ -44,7 +31,7 @@ PHP version 5.2.4 or greater (PHP 5.6+ is recommended)
 
 MySQL version 5.0 or greater (MySQL 5.6+ is recommended)
 
-WooCommerce 2.5+ / Requires WordPress 4.1+
+WooCommerce 3.0+ / Requires WordPress 4.1+
 
 INSTALLATION
 
@@ -58,4 +45,5 @@ INSTALLATION
 
 
 == Changelog ==
+3.0 Pulled in Lots of updates by Larry from private update service. Notably this includes the price breakdowns.
 2.0 Reworked name of plugin to be inline with other woocommerce gateways, added logging via the WC logging class, updated the way items are sent to laybuy so there is less chance of a calualtion error, updated logo and description of the payment page.

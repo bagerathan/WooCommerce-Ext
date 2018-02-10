@@ -25,16 +25,39 @@ class Woocommerce_Laybuy_Form_Handler {
             $order = wc_get_order( absint( $_GET['order_id'] ) );
             $status = strtolower( $_GET['status'] );
 
+            if( !$order ) {
+                wc_add_notice( 'Invalid order.' );
+                $redirect = WC()->cart->get_cart_url();
+                wp_redirect( html_entity_decode( $redirect ) );
+                exit;
+            }
             // save the received token from laybuy
             update_post_meta( $_GET['order_id'], '_laybuy_token', $_GET['token'] );
 
             if( 'cancelled' == $status ) {
                 $redirect = $order->get_cancel_order_url();
             } else if( 'success' == $status ) {
+                $order->reduce_order_stock();
                 WC()->cart->empty_cart();
                 $redirect = woocommerce_laybuy_get_return_url( $order );
-            } else {
+            } else if( 'declined' == $status ) {
 
+                $order_id = absint( $_GET['order_id'] );
+                $order_key = $_GET['order'];
+                $user_can_decline  = current_user_can( 'cancel_order', $order_id );
+                $order_can_cancel = $order->has_status( array( 'pending', 'failed' ) );
+
+                if ( $user_can_decline && $order->get_id() === $order_id && $order->get_order_key() === $order_key ) {
+                    wc_add_notice( 'Your order is declined.' );
+            } else {
+                    wc_add_notice( __( 'Invalid Order.', 'woocommerce' ), 'error' );
+                }
+
+                $redirect = add_query_arg( array(
+                    'order_id' => $order_id,
+                    'order' => $order->get_order_key(),
+                    'decline_order' => 'true'
+                ), $order->get_cancel_endpoint() );
             }
 
             wp_redirect( html_entity_decode( $redirect ) );

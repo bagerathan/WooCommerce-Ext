@@ -6,7 +6,7 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
 
     public function __construct() {
         $this->id = 'laybuy';
-        $this->icon = apply_filters( 'woocommerce_laybuy_gateway_icon', plugin_dir_url(__FILE__) . 'images/laybuy_logo_transparent.png' );
+        $this->icon = apply_filters( 'woocommerce_laybuy_gateway_icon', plugin_dir_url(__FILE__) . 'images/laybuy_logo_small.svg' );
         $this->has_fields   = false;
         $this->method_title = 'Laybuy';
 
@@ -14,8 +14,9 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         $this->init_settings();
 
         $this->title        = $this->get_option( 'title' );
+        $this->description  = '<br>'; //$this->get_option('description');
         
-        $markup = '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">';
+        /*$markup = '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">';
         $markup .= '<div style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">';
         $markup .= 'Receive your order now, pay over <br><span style="font-weight: 700;">6 weeks</span> interest free!<br>Selecting Laybuy will re-direct you to a secure checkout facility. ';
         $markup .= '<a style="font-weight: 300; color:black; text-decoration: underline;" target="_blank" href="https://laybuy.com"> Learn More</a>';
@@ -28,7 +29,7 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         }
         else {
             $this->description = $markup; // $this->get_option('description');
-        }
+        }*/
         
         add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page' ) );
@@ -55,13 +56,35 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
                 'default'     => __( 'Laybuy', 'woocommerce_laybuy' ),
                 'desc_tip'    => true,
             ),
-           /* 'description' => array(
+           'description' => array(
                 'title'       => __( 'Description', 'woocommerce_laybuy' ),
                 'type'        => 'textarea',
                 'description' => __( 'This is the description for this payment method. The customer will see this during checkout.', 'woocommerce_laybuy' ),
                 'default'     => __( 'Receive your order now, pay over 6 weeks interest free!<br>Selecting Laybuy will re-direct you to a secure checkout facility.', 'woocommerce_laybuy' ),
                 'desc_tip'    => true,
-            ),*/
+            ),
+            'price_breakdown_option_product_page' => array(
+                'title'       => __( 'Price breakdown on products', 'woocommerce_laybuy' ),
+                'type'        => 'select',
+                'description' => __( 'Select how you want to display the price breakdown on each product page.', 'woocommerce_laybuy' ),
+                'default'     => 'disable',
+                'options'     => array(
+                    'disable' => __( 'Disable', 'woocommerce_laybuy' ),
+                    'text_only' => __( 'Text Only', 'woocommerce_laybuy' ),
+                    'text_and_table' => __( 'Text and Table', 'woocommerce_laybuy' ),
+                )
+            ),
+            'price_breakdown_option_checkout_page' => array(
+                'title'       => __( 'Price breakdown in checkout', 'woocommerce_laybuy' ),
+                'type'        => 'select',
+                'description' => __( 'Select how you want to display the price breakdown in the checkout page.', 'woocommerce_laybuy' ),
+                'default'     => 'disable',
+                'options'     => array(
+                    'disable' => __( 'Disable', 'woocommerce_laybuy' ),
+                    'text_only' => __( 'Text Only', 'woocommerce_laybuy' ),
+                    'text_and_table' => __( 'Text and Table', 'woocommerce_laybuy' ),
+                )
+            ),
             'environment' => array(
                 'title'       => __( 'Environment', 'woocommerce_laybuy' ),
                 'type'        => 'select',
@@ -97,6 +120,19 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
             ),
         
         );
+    }
+    
+    public function payment_fields() {
+        
+        Woocommerce_Laybuy_Logger::log('payment_fields -> START ');
+        
+        if ($description = $this->get_description()) {
+          
+            $description = apply_filters('laybuy_modify_payment_description', $description, $this->get_order_total());
+    
+            Woocommerce_Laybuy_Logger::log('payment_fields -> UPDATED get_description: ' . print_r($description, TRUE));
+            echo wpautop(wptexturize($description));
+        }
     }
 
     /**

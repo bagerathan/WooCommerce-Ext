@@ -3,7 +3,7 @@
 Plugin Name: Woocommerce Laybuy
 Plugin URI: https://www.laybuy.com/
 Description:  Payment gateway extension for laybuy.com
-Version: 1.0
+Version: 3.0
 Author: Carl Bowden, Larry Watene
 Author URI: carl@16hands.co.nz
 Text Domain: woocommerce_laybuy
@@ -79,11 +79,15 @@ function woocommerce_laybuy_recommend_ssl_notice() {
     
 }
 
+
+
 add_action('wp_enqueue_scripts', 'woocommerce_laybuy_plugin_assets');
 
 function woocommerce_laybuy_plugin_assets() {
     wp_enqueue_script('woocommerce-laybuy-notice-update', plugins_url('/js/notice-update.js', __FILE__), ['jquery'], '1.0', TRUE);
 }
+
+
 
 /**
  * Add automated updates class
