@@ -97,7 +97,7 @@ function woocommerce_laybuy_add_price_breakdown_for_text_only() {
         
         $laybuyicon = WOOCOMMERCE_LAYBUY_PLUGIN_PATH . 'images/laybuy_logo_small.svg';
 		$html_breakdown = sprintf('%1$s%2$s',
-			      '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">',
+			      '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">',
                 '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 12px;">'.
                    "or 6 weekly interest free payments of <strong>NZD{$weekly_payment}</strong> with ".
                 '<img style="float:none; display:inline-block; vertical-align:middle;padding-left: 2px; padding-bottom:3px; width:80px" src="' . $laybuyicon . '"></p>');
@@ -127,7 +127,7 @@ function woocommerce_laybuy_add_price_breakdown_for_text_and_table() {
     
         $laybuyicon = WOOCOMMERCE_LAYBUY_PLUGIN_PATH . 'images/laybuy_logo_small.svg';
         $html_breakdown = sprintf('%1$s%2$s%3$s',
-                                  '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">' ,
+                                  '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZDP" rel="stylesheet">' ,
                                  '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
                                   "or 6 interest free payments from <strong style='font-weight: 700;'>NZD{$weekly_payment}</strong> with ", '<img style="float:none; display:inline; vertical-align:middle;padding-left: 4px" src="' . $laybuyicon . '"></p>'
         );
@@ -187,7 +187,7 @@ function woocommerce_laybuy_modify_payment_description_for_text_only( $descripti
     
     $laybuyicon = WOOCOMMERCE_LAYBUY_PLUGIN_PATH . 'images/laybuy_logo_small.svg';
     $html_breakdown = sprintf('%1$s%2$s%3$s', $description_prefix
-                                  . '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">'
+                                  . '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">'
                                   . '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
                               'Receive your order now, pay with <br><span style="font-weight: 700;">6 weekly</span> payments of <strong>'.$weekly_payment.'</strong> interest free! &nbsp; Selecting Laybuy will
     re-direct you to a secure checkout facility. ', '<!--<img style="float:none; display:inline; vertical-align:middle;padding-left: 4px" src="' .
@@ -215,7 +215,7 @@ function woocommerce_laybuy_modify_payment_description_for_text_and_table( $desc
     
     $laybuyicon = WOOCOMMERCE_LAYBUY_PLUGIN_PATH . 'images/laybuy_logo_small.svg';
     $html_breakdown = sprintf('%1$s%2$s%3$s',
-                              '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">' . '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
+                              '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">' . '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
                               "or 6 interest free payments from <strong>{$weekly_payment}</strong> with ", '<img src="' . $laybuyicon . '"></p>'
     );
 
