@@ -89,12 +89,12 @@ class Woocommerce_Laybuy_Form_Handler {
                     )
                 )
             );
-
+            
+            $response = json_decode($request['body']);
+            
             if( is_wp_error( $request ) ) {
                 $order->add_order_note( 'The Laybuy system failed to process your request to cancel the order.. msg: ' . $response->error );
             }
-
-            $response = json_decode( $request['body'] );
 
             if( 'success' == strtolower( $response->result ) ) {
                 $order->add_order_note( 'The Laybuy system has processed your request to cancel the order..' );

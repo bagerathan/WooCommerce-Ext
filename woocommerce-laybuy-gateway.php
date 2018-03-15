@@ -74,6 +74,27 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
                     'text_and_table' => __( 'Text and Table', 'woocommerce_laybuy' ),
                 )
             ),
+
+            'price_breakdown_option_product_page_position' => array(
+                'title'       => __('Product Price breakdown Position', 'woocommerce_laybuy'),
+                'type'        => 'select',
+                'description' => 'Select where on the Product page you would like the breakdown to display, see <a href="https://businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/" target="_blank">here</a> for a visual guide',
+                'default'     => 'disable',
+                'options'     => array(
+                    'woocommerce_single_product_summary'        => __('woocommerce_single_product_summary'    ),
+                    'woocommerce_before_add_to_cart_form'       => __('woocommerce_before_add_to_cart_form'   ),
+                    'woocommerce_before_variations_form'        => __('woocommerce_before_variations_form'    ),
+                    'woocommerce_before_add_to_cart_button'     => __('woocommerce_before_add_to_cart_button' ),
+                    'woocommerce_before_single_variation'       => __('woocommerce_before_single_variation'   ),
+                    'woocommerce_single_variation'              => __('woocommerce_single_variation'          ),
+                    'woocommerce_after_single_variation'        => __('woocommerce_after_single_variation'    ),
+                    'woocommerce_after_add_to_cart_button'      => __('woocommerce_after_add_to_cart_button'  ),
+                    'woocommerce_after_add_to_cart_form'        => __('woocommerce_after_add_to_cart_form'    ),
+                    'woocommerce_product_meta_start'            => __('woocommerce_product_meta_start'        ),
+                    'woocommerce_product_meta_end'              => __('woocommerce_product_meta_end'          ),
+                ),
+            ),
+            
             'price_breakdown_option_checkout_page' => array(
                 'title'       => __( 'Price breakdown in checkout', 'woocommerce_laybuy' ),
                 'type'        => 'select',
@@ -316,7 +337,7 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         if( 'error' == strtolower( $response->result ) ) {
             return array(
                 'result' => false,
-                'error'  => $result->error
+                'error'  => $response->error
             );
         } else {
             update_post_meta( $order_id, '_laybuy_order_id', $response->orderId );

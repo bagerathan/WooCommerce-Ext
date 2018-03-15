@@ -73,8 +73,16 @@ function woocommerce_laybuy_get_coupon_amount( $coupon ) {
 }
 
 // Add price breakdown to Products
-add_action( 'woocommerce_single_product_summary', 'woocommerce_laybuy_add_price_breakdown_for_text_only', 11 );
+
 // add_filter( 'woocommerce_get_price_html', 'w2mlaybuy_add_price_breakdown_for_text_only', 10, 2 );
+
+function woocommerce_laybuy_product_page_action($function){
+    $settings = woocommerce_laybuy_get_settings();
+    $action = $settings['price_breakdown_option_product_page_position'];
+    add_action($action, $function, 11);
+}
+
+woocommerce_laybuy_product_page_action('woocommerce_laybuy_add_price_breakdown_for_text_only');
 
 function woocommerce_laybuy_add_price_breakdown_for_text_only() {
     global $product;
@@ -100,7 +108,9 @@ function woocommerce_laybuy_add_price_breakdown_for_text_only() {
 			      '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">',
                 '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 12px;">'.
                    "or 6 weekly interest free payments of <strong>NZD{$weekly_payment}</strong> with ".
-                '<img style="float:none; display:inline-block; vertical-align:middle;padding-left: 2px; padding-bottom:3px; width:80px" src="' . $laybuyicon . '"></p>');
+                 '<a href="https://www.laybuy.com" target="_blank">'.
+                 '<img style="float:none; display:inline-block; vertical-align:middle;padding-left: 2px; padding-bottom:3px; width:80px" src="' .
+                $laybuyicon . '"></a></p>');
         // '<img src="' . $laybuyicon . '"> LAY<strong style="font-family: Montserrat, sans-serif; color: black; font-weight: 700; font-size: 14px;">BUY</strong> - <a href="https://www.laybuy
         //.com/what-is-laybuy" target="_blank">Whats this?</a></p>'
 		
@@ -109,7 +119,9 @@ function woocommerce_laybuy_add_price_breakdown_for_text_only() {
 
 }
 
-add_action( 'woocommerce_single_product_summary', 'woocommerce_laybuy_add_price_breakdown_for_text_and_table', 11 );
+
+woocommerce_laybuy_product_page_action('woocommerce_laybuy_add_price_breakdown_for_text_and_table');
+
 function woocommerce_laybuy_add_price_breakdown_for_text_and_table() {
     global $product;
     $settings = woocommerce_laybuy_get_settings();
@@ -129,7 +141,8 @@ function woocommerce_laybuy_add_price_breakdown_for_text_and_table() {
         $html_breakdown = sprintf('%1$s%2$s%3$s',
                                   '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZDP" rel="stylesheet">' ,
                                  '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
-                                  "or 6 interest free payments from <strong style='font-weight: 700;'>NZD{$weekly_payment}</strong> with ", '<img style="float:none; display:inline; vertical-align:middle;padding-left: 4px" src="' . $laybuyicon . '"></p>'
+                                  "or 6 interest free payments from <strong style='font-weight: 700;'>NZD{$weekly_payment}</strong> with ",
+                                  '<a href="https://www.laybuy.com" target="_blank"><img style="float:none; display:inline; vertical-align:middle;padding-left: 4px" src="' . $laybuyicon . '"></a></p>'
         );
 
         date_default_timezone_set( wp_get_timezone_string() );
@@ -162,6 +175,7 @@ function woocommerce_laybuy_add_price_breakdown_for_text_and_table() {
 
 // Add price breakdown to Checkout
 add_filter( 'laybuy_modify_payment_description', 'woocommerce_laybuy_modify_payment_description_for_text_only', 10, 2 );
+
 function woocommerce_laybuy_modify_payment_description_for_text_only( $description, $total ) {
 
     $settings = woocommerce_laybuy_get_settings();
@@ -190,9 +204,7 @@ function woocommerce_laybuy_modify_payment_description_for_text_only( $descripti
                                   . '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">'
                                   . '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
                               'Receive your order now, pay with <br><span style="font-weight: 700;">6 weekly</span> payments of <strong>'.$weekly_payment.'</strong> interest free! &nbsp; Selecting Laybuy will
-    re-direct you to a secure checkout facility. ', '<!--<img style="float:none; display:inline; vertical-align:middle;padding-left: 4px" src="' .
-                                                                                                           $laybuyicon .
-                                                                                                           '"> --></p>'
+    re-direct you to a secure checkout facility. ', '</p>'
 	);
 
     return $description . $html_breakdown;
@@ -216,7 +228,8 @@ function woocommerce_laybuy_modify_payment_description_for_text_and_table( $desc
     $laybuyicon = WOOCOMMERCE_LAYBUY_PLUGIN_PATH . 'images/laybuy_logo_small.svg';
     $html_breakdown = sprintf('%1$s%2$s%3$s',
                               '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abefilkmnoprstuwy1234567890$PNZD" rel="stylesheet">' . '<p style="font-family: Montserrat, sans-serif; color: black; font-weight: 300; font-size: 14px;">',
-                              "or 6 interest free payments from <strong>{$weekly_payment}</strong> with ", '<img src="' . $laybuyicon . '"></p>'
+                              "or 6 interest free payments from <strong>{$weekly_payment}</strong> with ",
+                              '<a href="https://www.laybuy.com" target="_blank"><img src="' . $laybuyicon . '"></a></p>'
     );
 
     date_default_timezone_set( wp_get_timezone_string() );
