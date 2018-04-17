@@ -365,12 +365,13 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
      */
     public function get_custom_return_url($order) {
         // when creating the cancel or success form see this file WC_Form_Handler line 30
-
+        $home = get_home_url();
+        
         $custom_return_url = add_query_arg( array(
             'gateway_id'      => WOOCOMMERCE_LAYBUY_SLUG,
             'order'        => $order->get_order_key(),
             'order_id'     => $order->get_id(),
-        ), get_home_url() );
+        ), trailingslashit($home) );
 
         return $custom_return_url;
     }
