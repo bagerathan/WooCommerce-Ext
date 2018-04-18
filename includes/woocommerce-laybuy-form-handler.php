@@ -37,7 +37,8 @@ class Woocommerce_Laybuy_Form_Handler {
             if( 'cancelled' == $status ) {
                 $redirect = $order->get_cancel_order_url();
             } else if( 'success' == $status ) {
-                $order->reduce_order_stock();
+                // $order->wc_reduce_stock();
+                wc_reduce_stock_levels($order->get_id());
                 WC()->cart->empty_cart();
                 $redirect = woocommerce_laybuy_get_return_url( $order );
             } else if( 'declined' == $status ) {
@@ -49,7 +50,7 @@ class Woocommerce_Laybuy_Form_Handler {
 
                 if ( $user_can_decline && $order->get_id() === $order_id && $order->get_order_key() === $order_key ) {
                     wc_add_notice( 'Your order is declined.' );
-            } else {
+                } else {
                     wc_add_notice( __( 'Invalid Order.', 'woocommerce' ), 'error' );
                 }
 
