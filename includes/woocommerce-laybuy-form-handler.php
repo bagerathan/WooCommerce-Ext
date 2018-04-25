@@ -18,7 +18,7 @@ class Woocommerce_Laybuy_Form_Handler {
     }
 
     public static function handle_return_url() {
-
+        // /store/?gateway_id=woocommerce-laybuy&order=wc_order_5ad82b288815b&order_id=3361&status=SUCCESS&token=8i6OSrTRcFgFC73dHPMklCVSdbbUHy1n3LayUaIk
         if( isset( $_GET['gateway_id'] ) && WOOCOMMERCE_LAYBUY_SLUG == $_GET['gateway_id'] && isset( $_GET['order'] ) && isset( $_GET['order_id'] ) && isset( $_GET['status'] ) && isset( $_GET['token']
             ) ) {
 
@@ -34,14 +34,18 @@ class Woocommerce_Laybuy_Form_Handler {
             // save the received token from laybuy
             update_post_meta( $_GET['order_id'], '_laybuy_token', $_GET['token'] );
 
-            if( 'cancelled' == $status ) {
+            if( 'cancelled' === $status ) {
                 $redirect = $order->get_cancel_order_url();
-            } else if( 'success' == $status ) {
+                
+            } else if( 'success' === $status ) {
+                
                 // $order->wc_reduce_stock();
-                wc_reduce_stock_levels($order->get_id());
+                $order->payment_complete();  // this was missing!
+                wc_reduce_stock_levels($order);
                 WC()->cart->empty_cart();
                 $redirect = woocommerce_laybuy_get_return_url( $order );
-            } else if( 'declined' == $status ) {
+                
+            } else if( 'declined' === $status ) {
 
                 $order_id = absint( $_GET['order_id'] );
                 $order_key = $_GET['order'];
