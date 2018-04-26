@@ -19,10 +19,10 @@ class Woocommerce_Laybuy_Form_Handler {
 
     public static function handle_return_url() {
         // /store/?gateway_id=woocommerce-laybuy&order=wc_order_5ad82b288815b&order_id=3361&status=SUCCESS&token=8i6OSrTRcFgFC73dHPMklCVSdbbUHy1n3LayUaIk
-        if( isset( $_GET['gateway_id'] ) && WOOCOMMERCE_LAYBUY_SLUG == $_GET['gateway_id'] && isset( $_GET['order'] ) && isset( $_GET['order_id'] ) && isset( $_GET['status'] ) && isset( $_GET['token']
+        if( isset( $_GET['gateway_id'] ) && WOOCOMMERCE_LAYBUY_SLUG == $_GET['gateway_id'] && isset( $_GET['order'] ) && isset( $_GET['order_id'] ) && isset( $_GET['token']
             ) ) {
-
-            $order = wc_get_order( absint( $_GET['order_id'] ) );
+            $order_id = absint($_GET['order_id']);
+            $order = wc_get_order($order_id );
             $status = strtolower( $_GET['status'] );
 
             if( !$order ) {
@@ -32,18 +32,37 @@ class Woocommerce_Laybuy_Form_Handler {
                 exit;
             }
             // save the received token from laybuy
-            update_post_meta( $_GET['order_id'], '_laybuy_token', $_GET['token'] );
+            update_post_meta($order_id, '_laybuy_token', $_GET['token'] );
 
-            if( 'cancelled' === $status ) {
+            if( empty($status) || 'cancelled' === $status  ) {
                 $redirect = $order->get_cancel_order_url();
                 
             } else if( 'success' === $status ) {
                 
-                // $order->wc_reduce_stock();
-                $order->payment_complete();  // this was missing!
-                wc_reduce_stock_levels($order);
-                WC()->cart->empty_cart();
-                $redirect = woocommerce_laybuy_get_return_url( $order );
+                // do the laybuy conformation here
+                // so if the thankyou page doesn't happen we have a correct order in place
+                $confimed = self::confirmOrder($order_id);
+                
+                
+                if(is_wp_error($confimed)){
+                    
+                    wc_add_notice($confimed->get_error_message());
+                    $redirect = add_query_arg([
+                                                  'order_id'      => $order_id,
+                                                  'order'         => $order->get_order_key(),
+                                                  'decline_order' => 'true'
+                                              ], $order->get_cancel_endpoint());
+                    
+                }
+                else {
+                    $laybuy_id  = $confimed;
+                    // $order->wc_reduce_stock();
+                    $order->payment_complete($laybuy_id);  // this was missing!
+                    //wc_reduce_stock_levels($order); hooked into complete
+                    WC()->cart->empty_cart();
+                    $redirect = woocommerce_laybuy_get_return_url($order);
+                }
+                
                 
             } else if( 'declined' === $status ) {
 
@@ -146,7 +165,52 @@ class Woocommerce_Laybuy_Form_Handler {
             }
         }
     }
-
+    
+    public static function confirmOrder($order_id) {
+    
+        $settings = woocommerce_laybuy_get_settings();
+        
+        if (woocommerce_laybuy_is_sandbox_enabled()) {
+            $endpoint = SANDBOX_API_ENDPOINT;
+        }
+        else {
+            $endpoint = PRODUCTION_API_ENDPOINT;
+        }
+      
+        $endpoint .= CONFIRM_ORDER_SUFFIX;
+        
+        if (!get_post_meta($order_id, '_laybuy_token', TRUE)) {
+            return [
+                'result' => FALSE,
+                'error'  => 'Token not found error'
+            ];
+        }
+        
+        $request_data = [
+            'token' => get_post_meta($order_id, '_laybuy_token', TRUE)
+        ];
+        
+        $request = wp_remote_post($endpoint, [
+                                               'headers' => [
+                                                   'Authorization' => 'Basic ' . base64_encode($settings['merchant_id'] . ':' . $settings['api_key'])
+                                               ],
+                                               'body'    => json_encode($request_data)
+                                           ]);
+        
+        $response = json_decode($request['body']);
+        
+        if ('error' === strtolower($response->result)) {
+            $error = new \WP_Error('Order could not be confirmed');
+            return $error;
+        }
+        else {
+            update_post_meta($order_id, '_laybuy_order_id', $response->orderId);
+            return  $response->orderId;
+        }
+        
+       
+    }
+    
 }
 
 Woocommerce_Laybuy_Form_Handler::init();

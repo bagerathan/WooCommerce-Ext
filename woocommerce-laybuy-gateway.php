@@ -216,12 +216,12 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
                 'id' => 'shipping_fee_for_order#' . $order_id,
                 'description' => 'Shipping fee for this order',
                 'quantity' => '1',
-                'price' => $order->get_shipping_total() + ($order->get_shipping_tax() ? $order->get_shipping_tax() : 0 )
+                'price' =>  $order->get_shipping_total() + ($order->get_shipping_tax() ? $order->get_shipping_tax() : 0 )
             );
             $items_total = ($items_total - ($order->get_shipping_total() + ($order->get_shipping_tax() ? $order->get_shipping_tax() : 0)));
         }
 
-        if( $order->get_total_tax() && 'no' == get_option( 'woocommerce_prices_include_tax' ) ) {
+        if( $order->get_total_tax() && 'no' === get_option( 'woocommerce_prices_include_tax' ) ) {
             $request_data['items'][] = array(
                 'id' => 'total_tax_amount_for_order#' . $order_id,
                 'description' => 'Tax amount for this order',
@@ -303,51 +303,61 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
     }
 
     public function confirm_order( $order_id ) {
-
-        if( $this->is_sandbox_enabled() ) {
-            $endpoint = SANDBOX_API_ENDPOINT;
-        } else {
-            $endpoint = PRODUCTION_API_ENDPOINT;
+        
+        if(!get_post_meta($order_id, '_laybuy_order_id', TRUE)) {
+    
+    
+            if ($this->is_sandbox_enabled()) {
+                $endpoint = SANDBOX_API_ENDPOINT;
+            }
+            else {
+                $endpoint = PRODUCTION_API_ENDPOINT;
+            }
+    
+            $endpoint .= CONFIRM_ORDER_SUFFIX;
+    
+            if (!get_post_meta($order_id, '_laybuy_token', TRUE)) {
+                return [
+                    'result' => FALSE,
+                    'error'  => 'Token is not saved in database'
+                ];
+            }
+    
+            $request_data = [
+                'token' => get_post_meta($order_id, '_laybuy_token', TRUE)
+            ];
+    
+            $request = wp_remote_post($endpoint, [
+                                                   'headers' => [
+                                                       'Authorization' => 'Basic ' . base64_encode($this->get_merchant_id() . ':' . $this->get_api_key())
+                                                   ],
+                                                   'body'    => json_encode($request_data)
+                                               ]);
+    
+            $response = json_decode($request['body']);
+    
+            if ('error' == strtolower($response->result)) {
+                return [
+                    'result' => FALSE,
+                    'error'  => $response->error
+                ];
+            }
+            else {
+                update_post_meta($order_id, '_laybuy_order_id', $response->orderId);
+                return [
+                    'result'  => TRUE,
+                    'message' => 'Order is confirmed'
+                ];
+            }
         }
-
-        $endpoint .= CONFIRM_ORDER_SUFFIX;
-
-        if( !get_post_meta( $order_id, '_laybuy_token', true ) ) {
-            return array(
-                'result' => false,
-                'error'  => 'Token is not saved in database'
-            );
-        }
-
-        $request_data = array(
-            'token' => get_post_meta( $order_id, '_laybuy_token', true )
-        );
-
-        $request = wp_remote_post( $endpoint,
-            array(
-                'headers' => array(
-                    'Authorization' => 'Basic ' . base64_encode( $this->get_merchant_id() . ':' . $this->get_api_key() )
-                ),
-                'body' => json_encode( $request_data )
-            )
-        );
-
-        $response = json_decode( $request['body'] );
-
-        if( 'error' == strtolower( $response->result ) ) {
-            return array(
-                'result' => false,
-                'error'  => $response->error
-            );
-        } else {
-            update_post_meta( $order_id, '_laybuy_order_id', $response->orderId );
-            return array(
-                'result' => true,
-                'message'  => 'Order is confirmed'
-            );
+        else {
+            return [
+                'result'  => TRUE,
+                'message' => 'Order is confirmed'
+            ];
         }
     }
-
+    
     public function get_merchant_id()  {
         return $this->get_option( 'merchant_id' );
     }
@@ -368,7 +378,7 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         $home = get_home_url();
         
         $custom_return_url = add_query_arg( array(
-            'gateway_id'      => WOOCOMMERCE_LAYBUY_SLUG,
+            'gateway_id'   => WOOCOMMERCE_LAYBUY_SLUG,
             'order'        => $order->get_order_key(),
             'order_id'     => $order->get_id(),
         ), trailingslashit($home) );
