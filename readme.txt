@@ -27,7 +27,7 @@ SETUP
 
 REQUIREMENTS
 
-PHP version 5.2.4 or greater (PHP 5.6+ is recommended)
+PHP version 5.4 or greater (PHP 5.6+ is recommended)
 
 MySQL version 5.0 or greater (MySQL 5.6+ is recommended)
 
@@ -46,6 +46,7 @@ INSTALLATION
 5. Browse to Admin -> Wocommerce -> Settings -> Checkout -> Laybuy, here you can set your Laybuy Merchant details and choose to display the product price breakdown. The breakdown is displayed with Woocommerce's Product actions, there is a link in the Description to show you where these will display.
 
 == Changelog ==
+3.1.7 resolved a multisite issue
 3.1.6 Fixed an issue with order stock handling and correct the order complete handling
 3.0   Pulled in Lots of updates by Larry from private update service. Notably this includes the price breakdowns.
 2.0   Reworked name of plugin to be inline with other woocommerce gateways, added logging via the WC logging class, updated the way items are sent to laybuy so there is less chance of a calualtion error, updated logo and description of the payment page.
