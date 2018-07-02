@@ -9,7 +9,9 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         $this->icon = apply_filters( 'woocommerce_laybuy_gateway_icon', plugin_dir_url(__FILE__) . 'images/laybuy_logo_small.svg' );
         $this->has_fields   = false;
         $this->method_title = 'Laybuy';
-
+    
+        $this->supports = ['products'];
+    
         $this->init_form_fields();
         $this->init_settings();
 
@@ -193,7 +195,7 @@ class Woocommerce_Laybuy_Gateway extends WC_Payment_Gateway {
         $items_total = $total;
         $request_data = array(
             'amount'    => $total,
-            'currency'  => $order->get_currency(),
+            'currency'  => get_woocommerce_currency(),
             'returnUrl' => $this->get_custom_return_url( $order ),
             'merchantReference' => '#' . uniqid() . $order_id . time(),
             'customer' => array(
