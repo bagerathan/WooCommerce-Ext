@@ -95,6 +95,9 @@ function woocommerce_laybuy_add_price_breakdown_for_text_only() {
 
 	if( is_product() ) {
 		$payment_breakdown = woocommerce_laybuy_calculation( $product->get_price() );
+		if(is_composite_product()){
+            		$payment_breakdown = woocommerce_laybuy_calculation( $product->get_composite_price());
+        	}
         $minimum_today = wc_price( $payment_breakdown['minimum_today'] );
         $weekly_payment = wc_price( $payment_breakdown['weekly_payment'] );
        /* markup = '<link href="https://fonts.googleapis.com/css?family=Montserrat:300,700&text=.abeilmnoprstuwy1234567890$P" rel="stylesheet">';
@@ -133,6 +136,9 @@ function woocommerce_laybuy_add_price_breakdown_for_text_and_table() {
     if( is_product() ) {
 
         $payment_breakdown = woocommerce_laybuy_calculation( $product->get_price() );
+	if(is_composite_product()){
+            $payment_breakdown = woocommerce_laybuy_calculation( $product->get_composite_price());
+        }
         $minimum_today = wc_price( $payment_breakdown['minimum_today'] );
         $weekly_payment = wc_price( $payment_breakdown['weekly_payment'] );
     
